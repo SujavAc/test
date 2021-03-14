@@ -17,7 +17,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import logo from "../logo.svg";
+import logo from "../image/logo.svg";
 import AddIcCallIcon from "@material-ui/icons/AddIcCall";
 import EnquiryForm from "../component/enquiryform";
 

@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { useFadedShadowStyles } from "@mui-treasury/styles/shadow/faded";
-import logo from "../logo.svg";
+import logo from "../image/logo.svg";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
