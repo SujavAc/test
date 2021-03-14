@@ -13,7 +13,7 @@ export default function AgeCare() {
   return (
     <div className={classes.root}>
       <VetCoursePage
-        Title={"Age Care"}
+        Title={"Aged Care"}
         Image={
           "https://insightplus.mja.com.au/wp-content/uploads/2020/08/aged-care-new-model-deals-with-issues-spotlighted-by-covid-19-294.jpg"
         }

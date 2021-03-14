@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import Axios from "axios";
+import { fireStore } from '../util/firebase';
 
 //Snackbar
 
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EventRegisterForm(props) {
   const classes = useStyles();
   const [data,setData] = React.useState({name:'',eamil:'',phone:''});
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
   const [msg, setMsg] = React.useState({ errMsg: "", successMsg: "" });
 
   //snackbar
@@ -81,35 +81,22 @@ export default function EventRegisterForm(props) {
         errMsg: "Try harder...!!! use valid phone number...",
       });
     } else {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("email", data.email);
-      formData.append("phone", data.phone);
-      formData.append("eventname",props.Eventname);
-
-      Axios.post(
-        "http://172.26.34.83:81/Webandy/webandy/src/database/eventRegister.php",
-        formData
-      )
-        .then((res) => {
-          console.log(res);
-          console.log(data);
-          if(res.data === 'Your have successfully register for event.'){
-            setMsg({
-                successMsg: res.data,
-              });
-          }else{
-              setMsg({
-                  errMsg:res.data,
-              })
-          }
-          
-        })
-        .catch((err) => {
-          setMsg({
-            errMessage: err.message,
-          });
+      fireStore.collection('Event Register').add({ name:data.name,email:data.email,phone:data.phone,EventTitle:props.Eventname,Date:new Date().toLocaleString()})
+      .then((docRef)=>{
+        setMsg({
+          successMsg:'Successfully Register for Upcoming Events.'
         });
+        setData({
+          name:'',eamil:'',phone:''
+        });
+        setChecked(false);
+      })
+      .catch((error) => {
+        setMsg({
+          errMessage: "Errorin creating vet and trade course banner" ,error,
+        });
+        
+      })
     }
   };
 
@@ -119,7 +106,7 @@ export default function EventRegisterForm(props) {
         Register here for the Upcoming {props.Eventname}
       </Typography>
 
-      <TextField id="standard-basic" label="Full Name"
+      <TextField id="standard-basic" label="Full Name" value={data.name}
       onChange={(event) => {
         const Name = event.target.value;
         setData((prevSetData) => ({
@@ -129,7 +116,7 @@ export default function EventRegisterForm(props) {
         }));
       }}
       />
-      <TextField id="standard-basic" label="Email" 
+      <TextField id="standard-basic" label="Email" value={data.email}
       onChange={(event) => {
         const Email = event.target.value;
         setData((prevSetData) => ({
@@ -139,7 +126,7 @@ export default function EventRegisterForm(props) {
         }));
       }}
       />
-      <TextField id="standard-basic" label="Phone" 
+      <TextField id="standard-basic" label="Phone" value={data.phone}
       onChange={(event) => {
         const Phone = event.target.value;
         setData((prevSetData) => ({

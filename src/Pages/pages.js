@@ -14,6 +14,8 @@ import Footer from "../component/footer";
 import ExpertForm from './form';
 import FeedBackForm from '../component/feedbackform/form';
 import Grid from '@material-ui/core/Grid';
+import CourseContainer from '../component/popularcoursecontainer';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -91,6 +93,13 @@ const useStyles = makeStyles((theme) => ({
    
     
   },
+  conatiner:{
+    height: "auto",
+    padding: theme.spacing(2),
+    width: "auto",
+    justifyContent:'center',
+    alignItems:'center',
+  },
   service:{
     flexGrow:1,
   },
@@ -131,11 +140,11 @@ export default function Pages(props) {
 
       <Paper elevation={5} className={classes.image}>
         <Card>
-          <CardActionArea >
+          
             <CardMedia
               component="img"
               
-              height="640"
+              height="350"
               image={img1}
             />
             <CardContent>
@@ -146,17 +155,17 @@ export default function Pages(props) {
                 {props.p2}
               </Typography>
             </CardContent>
-          </CardActionArea>
+          
         </Card>
       </Paper>
 
       <Paper elevation={5} className={classes.image}>
         <Card>
-          <CardActionArea>
+          
             <CardMedia
               component="img"
               
-              height="640"
+              height="350"
               image={img2}
               
             />
@@ -168,85 +177,94 @@ export default function Pages(props) {
                 {props.p3}
               </Typography>
             </CardContent>
-          </CardActionArea>
-        </Card>
-      </Paper>
-
-
-
-      <Paper elevation={5} className={classes.services}>
-      <div className={classes.service}>
-      <Grid container spacing={3}>
-        
-        <Grid item xs={6}>
           
-          <Card className={classes.card}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              
-              height="230"
-              image={img3}
-              
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {props.ServiceTitle}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {props.ServiceDescription}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
         </Card>
-        </Grid>
-        <Grid item xs={6}>
-        <Card className={classes.card}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              
-              height="230"
-              image={img4}
-              
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {props.ServiceTitle1}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {props.ServiceDescription1}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-        </Grid>
-        <Grid item xs={6}>
-        <Card className={classes.card}>
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              
-              height="230"
-              image={img5}
-              
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {props.ServiceTitle2}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {props.ServiceDescription2}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-        </Grid>
-        
-      </Grid>
-    </div>
       </Paper>
 
+      {props.ServiceTitle ? (
+        <Paper elevation={5} className={classes.services}>
+        <div className={classes.service}>
+        <Grid container spacing={3}>
+          
+          <Grid item xs={6}>
+            
+            <Card className={classes.card}>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                
+                height="230"
+                image={img3}
+                
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {props.ServiceTitle}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {props.ServiceDescription}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+          </Grid>
+          <Grid item xs={6}>
+          <Card className={classes.card}>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                
+                height="230"
+                image={img4}
+                
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {props.ServiceTitle1}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {props.ServiceDescription1}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+          </Grid>
+          <Grid item xs={6}>
+          <Card className={classes.card}>
+            <CardActionArea>
+              <CardMedia
+                component="img"
+                
+                height="230"
+                image={img5}
+                
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {props.ServiceTitle2}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {props.ServiceDescription2}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+          </Grid>
+          
+        </Grid>
+      </div>
+        </Paper>
+      ):(
+        <div></div>
+      )}
+
+    {props.PopularCourseContainer ? (
+      <Paper elevation={5} className={classes.conatiner}>
+      <CourseContainer/>
+      </Paper>
+    ):(
+      <div></div>
+    )}
 
 
 

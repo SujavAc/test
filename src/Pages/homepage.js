@@ -15,7 +15,7 @@ import Form from '../Pages/form';
 //import { Rotate90DegreesCcw } from '@material-ui/icons';
 import Footer from '../component/footer';
 import SwipeableTextMobileStepper from '../component/carousel';
-import Popover from '../component/popover';
+//import Popover from '../component/popover';
 import Feedback from '../component/feedbackform/form';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const classes = useStyles();
             <div className={classes.form} >
             <Form Title={'Talk With Experts'}/>
             </div>
-            <Popover />
+            
             <div className={classes.feedback}>
             <Feedback/>
             </div>

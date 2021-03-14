@@ -8,11 +8,12 @@ import Feedback from "../../feedback";
 import Form from "../../Form/openform";
 import Expert from "../../../image/advice.jpg";
 import Footer from "../../footer";
-import Axios from "axios";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Question from '../component/Accordion';
+import Accordion from '../component/Accordion';
 import ExpertOpinion from '../../../Pages/form';
 import FeedBackForm from '../../feedbackform/form';
+import Grid from '@material-ui/core/Grid';
+import { fireStore } from '../../../util/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,10 +55,8 @@ const useStyles = makeStyles((theme) => ({
   faq: {
     height: "auto",
     padding: theme.spacing(2),
-    
     width: "auto",
-    backgroundImage: '#000',
-    backgroundSize: "cover",
+    backgroundColor: '#000',
   },
   image: {
     height: "auto",
@@ -78,16 +77,12 @@ const useStyles = makeStyles((theme) => ({
     
   },
   bg: {
-    // backgroundImage:
-    //   "url(https://www.slideteam.net/media/catalog/product/cache/960x720/d/i/different_subjects_text_on_blue_books_stock_photo_Slide01.jpg)",
-    //   backgroundSize:'cover',
-    //   backgroundPosition:'center',
-    //   background: 'contain',
     height: "auto",
     width: "auto",
     justifyContent: "center",
     textAlign: "center",
     padding: theme.spacing(10),
+    background: "linear-gradient(170deg, #fff3e0 30%, #26c6da 90%)",
   },
   card: {
     height: "auto",
@@ -109,21 +104,37 @@ export default function Page(props) {
   
 
   React.useEffect(() => {
-    const Title = new FormData();
-  Title.append("Title", props.Title);
-    Axios.post(
-      "http://172.26.34.83:81/Webandy/webandy/src/database/course.php",
-      Title
-    )
-      .then((response) => {
-        setData({ Data: response.data });
-        setLoading(false);
-        console.log(response.data);
-      })
-      .catch((err) => console.log(err));
+    fireStore.collection('Popular Course').where('Title','==',props.Title).onSnapshot(onUpdateCourse);
+    
   }, [data.Data,props.Title]);
 
-  
+  const onUpdateCourse = (querySnapshot) =>{
+    const pCourse = [];
+    querySnapshot.forEach((doc) => {
+      const {
+        Title,
+        Url,
+        Description,
+        Moreinfo,
+        FeeStructure,
+        PRpathway,
+      } = doc.data();
+      pCourse.push({
+        key: doc.id,
+        doc,
+        Title,
+        Url,
+        Description,
+        Moreinfo,
+        FeeStructure,
+        PRpathway,
+      });
+    });
+    setData({
+      Data: pCourse,
+    });
+    setLoading(false);
+  }
 
   const classes = useStyles();
 
@@ -131,17 +142,6 @@ export default function Page(props) {
     <div className={classes.root}>
       <NavBarApp />
       
-      {loading ? (
-        <LinearProgress />
-      ) : data.Data.length === 0 ? (
-        <Paper elevation={5} className={classes.image}>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h3">
-              There are no recent data available.
-            </Typography>
-          </CardContent>
-        </Paper>
-      ) : (
         <div className={classes.Title}>
           <Paper elevation={5}  className={classes.bg}>
                 <Typography gutterBottom variant="h4" component="h1" color="tertiary" >
@@ -150,11 +150,15 @@ export default function Page(props) {
                 <ExpertOpinion Title={'Get Expert Opinion'}/>
             </Paper>
         </div>
-      )}
+      
      
 
       {loading ? (
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
         <LinearProgress />
+        </Grid>
+        </Grid>
       ) : data.Data.length === 0 ? (
         <Paper elevation={5} className={classes.image}>
           <CardContent>
@@ -166,19 +170,21 @@ export default function Page(props) {
       ) : (
         <div className={classes.Title}>
           {data.Data.map((value, index) => (
-            <Paper elevation={5} key={index}>
+            <Paper elevation={5} key={value.key}>
               <CardContent key={index} className={classes.content}>
               {/* <Image src={`data:image/jpeg;base64,${value.Image}`} /> */}
-              <img alt="description of paper" width="100%" height="100%" src={`data:image/jpeg;base64,${value.Image}`}/>
+              <img alt="description of paper" width="100%" height="60%" src={value.Url}/>
                 <p align="left">
                   <b>Course Description:</b>
                   <br></br>
                 </p>
                 <Typography gutterBottom variant="h6" component="h3">
                   {value.Description}
-                  {value.Details}
-                  {/* <img height="fit content" width="330px" src={`data:image/jpeg;base64,${value.Image}`}/> */}
                 </Typography>
+                <Typography gutterBottom variant="h6" component="h3">
+                  {value.Moreinfo}
+                </Typography>
+                
                 <p align="left">
                   <b>Fee Structure:</b>
                   <br></br>
@@ -196,7 +202,7 @@ export default function Page(props) {
                   <br></br>
                 </p>
                 <Typography variant="h6" color="primary" component="p">
-                  {value.CarrerPathway}
+                  {value.PRpathway}
                 </Typography>
               </CardContent>
               <img alt="description of card" height='100%' width="100%" src={img1} />
@@ -210,7 +216,7 @@ export default function Page(props) {
         </div>
       )}
       <Paper elevation={5} className={classes.faq}>
-      <Question />
+      <Accordion Filter={'Category'} Title={props.Title} />
       </Paper>
       
       <Paper elevation={5} className={classes.feedback}>

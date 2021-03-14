@@ -1,7 +1,9 @@
-import firebase from "firebase/app";
+import firebase from "firebase";
 import "firebase/storage";
+import "firebase/firestore";
 
-const firebaseConfig = {
+
+var firebaseApp = firebase.initializeApp({
     apiKey: "AIzaSyCl_peLTM_TTYhOkIhagZVXw_vrvTnJ_xs",
     authDomain: "rogereducation.firebaseapp.com",
     projectId: "rogereducation",
@@ -9,10 +11,15 @@ const firebaseConfig = {
     messagingSenderId: "509364474253",
     appId: "1:509364474253:web:37795d280b5dedfdf32dc4",
     measurementId: "G-TPPGRE3XQH"
-  };
+  });
 
-  firebase.initializeApp(firebaseConfig);
+  var firebaseDB = firebaseApp.database().ref();
 
-  const storage = firebase.storage();
+  var firebaseStorage = firebaseApp.storage();
 
-  export {storage,firebase as default};
+  var fireStore = firebaseApp.firestore();
+   
+
+  export {
+    firebaseStorage, firebaseDB, fireStore, firebase as default
+  }

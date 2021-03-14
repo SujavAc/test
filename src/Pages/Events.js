@@ -8,13 +8,14 @@ import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import Axios from "axios";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EventRegisterForm from "../component/EventRegisterForm";
 import Menu from "@material-ui/core/Menu";
 import EventDetails from './eventDetails';
 import NavBar from '../component/navbar';
 import Footer from '../component/footer';
+import {fireStore} from '../util/firebase';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -44,9 +45,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   formdetails:{
-    width: "80%",
+    width: "60%",
     alignContent: "center",
     justifyContent: "center",
+    padding:theme.spacing(4),
   },
   cardContainer:{
     width:'auto',
@@ -58,17 +60,22 @@ const useStyles = makeStyles((theme) => ({
       width:'auto',
     height:'auto',
     },
-
-
    
-    
+  },
+  eventDetails:{
+    width:'62%',
+    height:'100%',
+    justifyContent:'center',
+    textAlign:'center',
+    padding:theme.spacing(3),
+    margin:10,
   },
 }));
 
 export default function EventsPage() {
   const classes = useStyles();
-  const [data, setData] = React.useState({ Data: [] });
-  const [loading, setLoading] = React.useState(true);
+  const [data,setData] = React.useState({ Data: [] });
+  const [loading,setLoading] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [eventDetail, setEventDetail] = React.useState(null);
   
@@ -89,15 +96,37 @@ export default function EventsPage() {
   };
 
   React.useEffect(() => {
-    Axios.post("http://172.26.34.83:81/Webandy/webandy/src/database/Event.php")
-      .then((response) => {
-        setData({ Data: response.data });
-        console.log(response.data);
-        setLoading(false);
-      })
-      .catch((err) => console.log(err));
+    fireStore.collection('Events').onSnapshot(onCollectionUpdate);
   }, []);
-  
+
+  const onCollectionUpdate = (querySnapshot) => {
+    const event = [];
+    querySnapshot.forEach((doc) => {
+      const { EventTitle, EventDescription, Date, EventUploadDate, EventImage, Host1Image, HostName1, HostPosition1,Host2Image, HostName2, HostPosition2, Status  } = doc.data();
+      event.push({
+        key: doc.id,
+        doc,
+        EventTitle,
+        EventDescription,
+        EventUploadDate,
+        Date,
+        EventImage,
+        Host1Image, 
+        HostName1, 
+        HostPosition1,
+        Host2Image, 
+        HostName2, 
+        HostPosition2, 
+        Status
+       
+      });
+    });
+    setData({
+      Data: event,
+    });
+    setLoading(false);
+    
+  };
   return (
     <div className={classes.root}>
       <NavBar />
@@ -121,15 +150,15 @@ export default function EventsPage() {
         <div>
           
             {data.Data.map((value, index) => {
-              const image = value.Image;
+              
               return (
                 <div  className={classes.cardContainer}>
-                <Card  key={index}>
+                <Card  key={value.key}>
                   <CardActionArea disabled>
                     <CardMedia
                       component="img"
                       height="230"
-                      image={`data:image/jpeg;base64,${image}`}
+                      image={value.EventImage}
                     />
                     <CardContent>
                       <Typography
@@ -138,7 +167,7 @@ export default function EventsPage() {
                         component="h2"
                         color="primary"
                       >
-                        {value.Topic}
+                        {value.EventTitle}
                       </Typography>
                       <Typography
                         gutterBottom
@@ -146,7 +175,7 @@ export default function EventsPage() {
                         component="h2"
                         color="textPrimary"
                       >
-                        {value.Time}
+                        {value.Date}
                       </Typography>
                       <Typography
                         variant="body2"
@@ -177,7 +206,7 @@ export default function EventsPage() {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                       >
-                        <EventRegisterForm Eventname={value.Topic} />
+                        <EventRegisterForm Eventname={value.EventTitle} />
                       </Menu>
                       <Button size="small" color="primary" aria-controls="Form-details"
                         aria-haspopup="true" onClick={openForm1}>
@@ -191,7 +220,91 @@ export default function EventsPage() {
                         open={Boolean(eventDetail)}
                         onClose={handleClose1}
                       >
-                        <EventDetails EventTopic={value.Topic} />
+                        <Paper className={classes.eventDetails}>
+                        <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                        color="primary"
+                      >
+                        {value.EventTitle}
+                      </Typography>
+                        <Typography paragraph 
+                        
+                        
+                        >
+                          {value.EventDescription}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          color="textPrimary"
+                          component="p"
+                        >
+                          Host By:
+                        </Typography>
+                        <CardMedia
+                        component="img"
+                        height="230"
+                        width="300"
+                        image={value.Host1Image}
+                      />
+                        <Typography
+                          variant="h6"
+                          color="textPrimary"
+                          component="p"
+                        >
+                          {value.HostName1}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="textPrimary"
+                          component="p"
+                        >
+                          {value.HostPosition1}
+                        </Typography>
+                        <CardMedia
+                        component="img"
+                        height="230"
+                        width="300"
+                        image={value.Host2Image}
+                      />
+                        <Typography
+                          variant="h6"
+                          color="textPrimary"
+                          component="p"
+                        >
+                          {value.HostName2}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="textPrimary"
+                          component="p"
+                        >
+                          {value.HostPosition2}
+                        </Typography>
+                        <CardActions>
+                        <Button
+                        size="small"
+                        color="primary"
+                        aria-controls="simple-menu"
+                        aria-haspopup="true"
+                        onClick={openForm}
+                        variant='contained'
+                      >
+                        Register Here
+                      </Button>
+                      <Menu
+                        className={classes.formMenu}
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                      >
+                        <EventRegisterForm Eventname={value.EventTitle} />
+                      </Menu>
+                      </CardActions>
+                        </Paper>
                       </Menu>
                     </CardActions>
                   ) : (

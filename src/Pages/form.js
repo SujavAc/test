@@ -8,13 +8,14 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import countryList from "react-select-country-list";
 import Button from "@material-ui/core/Button";
-import Axios from "axios";
+//import Axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Fab from "@material-ui/core/Fab";
 import PropTypes from "prop-types";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
+import FirebaseDb from '../util/firebase';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -121,7 +122,8 @@ function DialogForm(props) {
     onClose(selectedValue);
   };
 
-  const onSubmitForm = () => {
+  const onSubmitForm = (e) => {
+    e.preventDefault();
     setOpenSnackbar({
       open: true,
     });
@@ -146,31 +148,53 @@ function DialogForm(props) {
         errMsg: "Try harder...!!! use valid phone number",
       });
     } else {
-      const formData = new FormData();
-      formData.append("firstname", data.firstname);
-      formData.append("lastname", data.lastname);
-      formData.append("email", data.email);
-      formData.append("number", data.number);
-      formData.append("passport", data.passport);
-      formData.append("question", data.question);
-      formData.append("message", data.message);
+      FirebaseDb.child('Expert Enquiry').push(
+        data,
+        err=>{
+          if (err)
+          console.log(err);
+        }
+      ).then(()=>{
+        setMsg({
+          successMsg:'Your enquiry for Expert evaluation have been submitted'
+        });
+        setData({
+          firstname: "",
+          lastname: "",
+          email: "",
+          number: "",
+          passport: "",
+          question: "",
+          message: "",
+        })
+      }).catch(error=>{
+        console.log(error);
+      })
+      // const formData = new FormData();
+      // formData.append("firstname", data.firstname);
+      // formData.append("lastname", data.lastname);
+      // formData.append("email", data.email);
+      // formData.append("number", data.number);
+      // formData.append("passport", data.passport);
+      // formData.append("question", data.question);
+      // formData.append("message", data.message);
       // formData.append('formdata','formdata');
 
-      Axios.post(
-        "http://172.26.34.83:81/Webandy/webandy/src/database/form.php",
-        formData
-      )
-        .then((res) => {
-          console.log(res);
-          setMsg({
-            successMsg: res.data,
-          });
-        })
-        .catch((err) => {
-          setMsg({
-            errMessage: err.message,
-          });
-        });
+      // Axios.post(
+      //   "http://172.26.34.83:81/Webandy/webandy/src/database/form.php",
+      //   formData
+      // )
+      //   .then((res) => {
+      //     console.log(res);
+      //     setMsg({
+      //       successMsg: res.data,
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     setMsg({
+      //       errMessage: err.message,
+      //     });
+      //   });
     }
   };
 
@@ -188,7 +212,7 @@ function DialogForm(props) {
           label="First Name"
           required
           variant="outlined"
-          defaultValue={data.firstname}
+          value={data.firstname}
           onChange={(event) => {
             const FirstName = event.target.value;
             setData((prevSetData) => ({
@@ -208,7 +232,7 @@ function DialogForm(props) {
           label="Last Name"
           required
           variant="outlined"
-          defaultValue={data.lastname}
+          value={data.lastname}
           id="validation-outlined-input"
           onChange={(event) => {
             const LastName = event.target.value;
@@ -228,7 +252,7 @@ function DialogForm(props) {
           label="Email Address"
           required
           variant="outlined"
-          defaultValue={data.email}
+          value={data.email}
           id="validation-outlined-input"
           onChange={(event) => {
             const Email = event.target.value;
@@ -248,7 +272,7 @@ function DialogForm(props) {
           label="Phone Number"
           required
           variant="outlined"
-          defaultValue={data.number}
+          value={data.number}
           id="validation-outlined-input"
           onChange={(event) => {
             const Number = event.target.value;
@@ -319,7 +343,7 @@ function DialogForm(props) {
           label="Message"
           multiline
           rows={4}
-          defaultValue={data.message}
+          value={data.message}
           variant="outlined"
           onChange={(event) => {
             const Message = event.target.value;

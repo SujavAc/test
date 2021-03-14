@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Axios from "axios";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -9,8 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import { Container, Grid, Grow } from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from "@material-ui/core/Paper";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Button from "@material-ui/core/Button";
+import {fireStore} from '../../util/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,20 +39,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function List() {
   const classes = useStyles();
-  const [enquiryData, setEnquiryData] = React.useState({ data: [] });
-  const [loading, setLoading] = React.useState(true);
+  const [enquiryData,setEnquiryData] = React.useState({ data: [] });
+  const [loading,setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    Axios.post(
-      "http://172.26.34.83:81/Webandy/webandy/src/database/getenquiryform.php"
-    )
-      .then((response) => {
-        setEnquiryData({ data: response.data });
-        setLoading(false);
-        
-      })
-      .catch((err) => console.log(err));
+    fireStore.collection("Enquiry Data").onSnapshot(onCollectionUpdate);
   }, [enquiryData.data]);
+
+  const onCollectionUpdate = (querySnapshot) => {
+    const enquiry = [];
+    querySnapshot.forEach((doc) => {
+      const { Name, Email, Message, Date} = doc.data();
+      enquiry.push({
+        key: doc.id,
+        doc,
+        Name,
+        Email,
+        Message,
+        Date
+      });
+    });
+    setEnquiryData({
+      data: enquiry,
+    });
+    setLoading(false);
+  };
 
   
 
@@ -100,13 +109,13 @@ export default function List() {
             <Grid container spacing={5} padding={10}>
               {enquiryData.data.map((value, index) => (
                 <Paper elevation={5} >
-                  <Card key={index.ID}>
-                    <CardActionArea key={index.ID}>
-                      <CardContent key={index.ID}>
+                  <Card key={value.key}>
+                    <CardActionArea>
+                      <CardContent >
                         <Typography gutterBottom variant="h6" component="h2">
                           <p>
                             {" "}
-                            <b>Full Name:</b> {value.FullName}
+                            <b>Full Name:</b> {value.Name}
                           </p>
                         </Typography>
                         <Typography variant="h6" component="h5">
@@ -139,28 +148,6 @@ export default function List() {
                       </CardContent>
                     </CardActionArea>
                     <CardActions key={index.ID}>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        startIcon={<DeleteIcon />}
-                        onClick={() => {
-                          const ID = new FormData();
-                          ID.append("ID", value.ID);
-                          Axios.post(
-                            "http://localhost:81/Webandy/webandy/src/database/deleteData.php",
-                            ID
-                          )
-                            .then((response) => {
-                              console.log(response.data);
-                              
-                              
-                            })
-                            .catch((err) => console.log(err));
-                        }}
-                      >
-                        Delete
-                      </Button>
                     </CardActions>
                   </Card>
                 </Paper>

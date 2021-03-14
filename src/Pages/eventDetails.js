@@ -73,7 +73,7 @@ export default function EventsDetails(props) {
         setLoading(false);
       })
       .catch((err) => console.log(err));
-  }, [props.EventTopic,data.Data]);
+  }, [props.EventTopic]);
   
   return (
     <div className={classes.root}>

@@ -4,12 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { DropzoneDialog } from "material-ui-dropzone";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
-import Axios from "axios";
-import Image from '../../image/feedback.jpg';
+import Image from "../../image/feedback.jpg";
+import { firebaseStorage, fireStore } from "../../util/firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundImage:'url('+Image+')',
+    backgroundImage: "url(" + Image + ")",
     backgroundSize: "cover",
     height: "100vh",
     display: "flex",
@@ -26,12 +26,7 @@ const useStyles = makeStyles((theme) => ({
       width: "40ch",
     },
   },
-  // feedback: {
-  //   position: "absolute",
-  //   left: "50%",
-  //   top: "50%",
-  //   transform: "translate(-50%, -50%)",
-  // },
+
   rating: {
     justifyContent: "center",
     alignItems: "center",
@@ -43,44 +38,39 @@ export default function HalfRating() {
   const [data, setData] = useState({
     name: "",
     email: "",
-    photo: "",
     message: "",
     rating: "",
   });
-  const [state, setState] = useState({ open: false, files: [] });
+  const [state, setState] = useState({ open: false, photo: "" });
   const [msgError, setMsgError] = useState({ message: "", success: "" });
+
   const handleClose = () => {
-    setState({
+    setState((prevSetData) => ({
       open: false,
-    });
+      photo: prevSetData.photo,
+    }));
+    console.log(state);
   };
 
   const handleSave = (files) => {
     //Saving files to state for further use and closing Modal.
+    const image = files[0];
     setState({
-      files: files,
       open: false,
+      photo: image,
     });
-    const Image = files[0];
-    console.log(Image);
-    setData((prevSetData) => ({
-      photo: Image,
-      name: prevSetData.name,
-      email: prevSetData.email,
-      message: prevSetData.message,
-      rating: prevSetData.rating,
-    }));
   };
 
   const handleOpen = () => {
-    setState({
+    setState((prevSetData) => ({
       open: true,
-    });
+      photo: prevSetData.photo,
+    }));
   };
-  const handleClick = () => {
-    console.log(data);
+  const handleClick = (e) => {
+    e.preventDefault();
     if (
-      !data.photo ||
+      !state.photo ||
       !data.name ||
       !data.message ||
       !data.rating ||
@@ -90,43 +80,64 @@ export default function HalfRating() {
         message: "fill all the details",
       });
     } else {
-      const contentData = new FormData();
-      contentData.append("name", data.name);
-      contentData.append("message", data.message);
-      contentData.append("email", data.email);
-      contentData.append("rating", data.rating);
-      contentData.append("image", data.photo, data.photo.name);
-      console.log(contentData);
-      Axios.post(
-        "http://localhost:81/Webandy/webandy/src/database/postReview.php",
-        contentData
-      )
-        .then((res) => {
-          console.log(res);
-          console.log(res);
-          setMsgError({
-            message: res.data,
-          });
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      const img = state.photo;
+      const uploadImage = firebaseStorage
+        .ref(`Feedback Photos/${img.name}`)
+        .put(state.photo);
+      uploadImage.on(
+        "state_changed",
+        (snapshot) => {
+          console.log("snapshot");
+        },
+        (error) => {
+          console.log(error);
+        },
+
+        () => {
+          firebaseStorage
+            .ref("Feedback Photos")
+            .child(img.name)
+            .getDownloadURL()
+            .then((url) =>
+              fireStore
+                .collection("Feedback List")
+                .add({
+                  Name: data.name,
+                  Email: data.email,
+                  Message: data.message,
+                  Rating: data.rating,
+                  Url: url,
+                })
+                .then((docRef) => {
+                  console.log("Successfully store in firestore");
+                  setData({
+                    name: "",
+                    email: "",
+                    message: "",
+                    rating: "",
+                  });
+                })
+                .catch((error) => {
+                  console.error("Error writing document: ", error);
+                })
+            );
+        }
+      );
     }
   };
 
   return (
-    
     <form className={classes.root} noValidate autoComplete="off">
       FeedBack Form
       <TextField
         id="standard-basic"
         label="Full Name"
+        value={data.name}
         onChange={(event) => {
           const FullName = event.target.value;
           setData((prevSetData) => ({
             name: FullName,
             email: prevSetData.email,
-            photo: prevSetData.photo,
             message: prevSetData.message,
             rating: prevSetData.rating,
           }));
@@ -135,21 +146,21 @@ export default function HalfRating() {
       <TextField
         id="standard-basic"
         label="Email"
+        value={data.email}
         onChange={(event) => {
           const Email = event.target.value;
           setData((prevSetData) => ({
             name: prevSetData.name,
             email: Email,
-            photo: prevSetData.photo,
             message: prevSetData.message,
             rating: prevSetData.rating,
           }));
         }}
       />
-      
       <TextField
         id="standard-multiline-static"
         label="Message"
+        value={data.message}
         multiline
         rows={4}
         onChange={(event) => {
@@ -157,7 +168,6 @@ export default function HalfRating() {
           setData((prevSetData) => ({
             name: prevSetData.name,
             email: prevSetData.email,
-            photo: prevSetData.photo,
             message: Message,
             rating: prevSetData.rating,
           }));
@@ -168,20 +178,25 @@ export default function HalfRating() {
           name="half-rating"
           precision={0.5}
           size="large"
+          value={data.rating}
           onChange={(event) => {
             const Rating = event.target.value;
             setData((prevSetData) => ({
               name: prevSetData.name,
               email: prevSetData.email,
-              photo: prevSetData.photo,
               message: prevSetData.message,
               rating: Rating,
             }));
           }}
         />
-        
       </div>
-      <Button onClick={handleOpen.bind(this)} variant='contained' color='primary'>Add Image</Button>
+      <Button
+        onClick={handleOpen.bind(this)}
+        variant="contained"
+        color="primary"
+      >
+        Add Image
+      </Button>
       <DropzoneDialog
         open={state.open}
         onSave={handleSave.bind(this)}
@@ -190,9 +205,11 @@ export default function HalfRating() {
         maxFileSize={5000000}
         onClose={handleClose.bind(this)}
       />
-      <Button onClick={handleClick} variant='contained' color='primary'>Submit</Button>
-      {msgError?(msgError.message):(msgError.success)}
+      <Button onClick={handleClick} variant="contained" color="primary">
+        Submit
+      </Button>
+      {msgError ? msgError.message : msgError.success}
     </form>
-    //</div>
+    
   );
 }

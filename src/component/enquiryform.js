@@ -7,9 +7,10 @@ import Button from "@material-ui/core/Button";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import TextField from "@material-ui/core/TextField";
-import Axios from "axios";
+// import Axios from "axios";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import {fireStore} from '../util/firebase';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -55,7 +56,8 @@ function SimpleDialog(props) {
     setOpenSnackbar(false);
   };
 
-  const handleClick = () => {
+  const handleClick = e => {
+    e.preventDefault();
     setOpenSnackbar(true);
     if (!data.Name || !data.Email || !data.Message) {
       setMsg({
@@ -66,27 +68,27 @@ function SimpleDialog(props) {
         errMessage: "Use valid Email",
       });
     } else {
-      const formData = new FormData();
-      formData.append("name", data.Name);
-      formData.append("email", data.Email);
-      formData.append("message", data.Message);
-
-      Axios.post(
-        "http://172.26.34.83:81/Webandy/webandy/src/database/enquiry.php",
-        formData
-      )
-        .then((res) => {
-          console.log(res);
-          setMsg({
-            successMsg: res.data,
-          });
-        })
-        .catch((err) => {
-          setMsg({
-            errMessage: err.message,
-          });
-        });
-    }
+      fireStore
+                .collection("Enquiry Data")
+                .add({
+                  Name: data.Name,
+                  Email: data.Email,
+                  Message: data.Message,
+                  Date:new Date().toLocaleString(),
+                })
+                .then((docRef) => {
+                  setMsg({successMsg:"You Enquiry has been delivered"});
+                  setData({
+                    Name: "",
+                    Email: "",
+                    Message: "",
+                    
+                  });
+                })
+                .catch((error) => {
+                  setMsg({errMessage:"Error sending Enquiry, Please Try Again!!!: ", error});
+                })
+     }
   };
 
   return (
@@ -102,6 +104,7 @@ function SimpleDialog(props) {
           id="outlined-basic"
           label="Full Name"
           variant="outlined"
+          value={data.Name}
           onChange={(event) => {
             const name = event.target.value;
             setData((prevSetData) => ({
@@ -116,6 +119,7 @@ function SimpleDialog(props) {
           id="outlined-basic"
           label="Email"
           variant="outlined"
+          value={data.Email}
           onChange={(event) => {
             const email = event.target.value;
             setData((prevSetData) => ({
@@ -130,6 +134,7 @@ function SimpleDialog(props) {
           id="outlined-basic"
           label="Message"
           variant="outlined"
+          value={data.Message}
           onChange={(event) => {
             const message = event.target.value;
             setData((prevSetData) => ({

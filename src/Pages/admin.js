@@ -11,6 +11,11 @@ import CloseIcon from "@material-ui/icons/Close";
 import Page from "./pages";
 import Paper from "@material-ui/core/Paper";
 import EnquiryList from "../component/Admin/enquiryList";
+import VetandTradeCourse from '../component/Admin/Vetandtradecourseform';
+import PopularCourseForm from '../component/Admin/addpopularcourse';
+import BlogForm from '../component/Admin/addBlogPost';
+import EventForm from '../component/Admin/EventForm';
+import FAQsForm from '../component/Admin/FAQs';
 
 function SlideTransition(props) {
   return <Slide {...props} direction="up" />;
@@ -192,6 +197,22 @@ export default function Admin() {
           </Button>
         </form>
       </Paper>
+      <Paper elevation={5} className={classes.paper1}>
+        <VetandTradeCourse />
+      </Paper>
+      <Paper elevation={5} className={classes.paper1}>
+        <PopularCourseForm />
+      </Paper>
+      <Paper elevation={5} className={classes.paper1}>
+        <BlogForm />
+      </Paper>
+      <Paper elevation={5} className={classes.paper1}>
+        <EventForm />
+      </Paper>
+      <Paper elevation={5} className={classes.paper1}>
+        <FAQsForm />
+      </Paper>
+      
       <Paper elevation={5} className={classes.paper1}>
         <EnquiryList />
       </Paper>

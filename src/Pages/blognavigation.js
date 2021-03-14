@@ -18,9 +18,9 @@ import FeedBack from "../component/feedback";
 import FeedBackForm from "../component/feedbackform/form";
 import Footer from "../component/footer";
 import ExpertForm from './form';
-import Axios from 'axios';
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Paper from '@material-ui/core/Paper';
+import { fireStore } from '../util/firebase';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,19 +75,48 @@ export default function BlogCard(props) {
 
  
   React.useEffect(() => {
-    const filterdata = new FormData();
-    filterdata.append('title',props.Title);
-    filterdata.append('category',props.Category);
-    filterdata.append('date',props.Date);
-    filterdata.append('authorname',props.Authorname);
-    Axios.post("http://172.26.34.83:81/Webandy/webandy/src/database/blogfilter.php",filterdata)
-      .then((response) => {
-        setData({ Data: response.data });
-        console.log(response);
-        setLoading(false);
-      })
-      .catch((err) => console.log(err));
+    if(props.Filter){
+      fireStore.collection('Blog').where(props.Title,'==',props.Filter).onSnapshot(onCollectionUpdate);
+    }
+    else if(props.Recent){
+      fireStore.collection('Blog').orderBy("Date","desc").onSnapshot(onCollectionUpdate);
+    
+    }else{
+      fireStore.collection('Blog').limit(10).onSnapshot(onCollectionUpdate);
+    }
+    
   }, [props]);
+
+  const onCollectionUpdate = (querySnapshot) => {
+    const blog = [];
+    querySnapshot.forEach((doc) => {
+      const { AuthorName, AuthorUrl, BlogDescription, BlogUrl, Blogtitle, Category, Date, Description1, Description2, Description3, Paragraph1, Paragraph2, Paragraph3  } = doc.data();
+      blog.push({
+        key: doc.id,
+        doc,
+        AuthorName,
+        AuthorUrl,
+        BlogDescription,
+        BlogUrl,
+        Blogtitle,
+        Category,
+        Date,
+        Description1,
+        Description2,
+        Description3,
+        Paragraph1,
+        Paragraph2,
+        Paragraph3,
+      });
+    });
+    setData({
+      Data: blog,
+    });
+    setLoading(false);
+    
+  };
+
+
   return (
     <div className={classes.root}>
 
@@ -111,24 +140,24 @@ export default function BlogCard(props) {
             {data.Data.map((value, index) => {
               return (
                 <div  className={classes.cardContainer}>
-                <Card className={classes.card} key={index}>
+                <Card className={classes.card} key={value.key}>
             <CardHeader
               avatar={
-                <Avatar aria-label="recipe" className={classes.avatar} src={`data:image/jpeg;base64,${value.AuthorImage}`} />
+                <Avatar aria-label="recipe" className={classes.avatar} src={value.AuthorUrl} />
               }
               // action={
               //   <IconButton aria-label="settings">
               //     <MoreVertIcon />
               //   </IconButton>
               // }
-              title={value.PostTitle}
+              title={value.Blogtitle}
               subheader={value.Date}
-              subHeader={value.AuthorName}
+              
             />
             <CardMedia
               className={classes.media}
-              image={`data:image/jpeg;base64,${value.BlogImage}`}
-              title={value.PostTitle}
+              image={value.BlogUrl}
+              title={value.BlogTitle}
             />
             <CardContent>
               <Typography variant="body2" color="textSecondary" component="p">
@@ -157,16 +186,19 @@ export default function BlogCard(props) {
               <CardContent>
                 <Typography paragraph>{value.Title1}</Typography>
                 <Typography paragraph>
-                 {value.Description1}
+                 {value.Paragraph1}
                 </Typography>
                 <Typography variant="h4">
-                  {value.Title2}
+                  {value.Description1}
                 </Typography>
                 <Typography paragraph>
-                  {value.Description2}
+                  {value.Paragraph2}
                 </Typography>
                 <Typography variant="h4">
-                  {value.Title3}
+                  {value.Description2}
+                </Typography>
+                <Typography paragraph>
+                  {value.Paragraph3}
                 </Typography>
                 <Typography paragraph>
                   {value.Description3}
