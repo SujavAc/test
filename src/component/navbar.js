@@ -155,6 +155,8 @@ export default function NavBar() {
             className={clsx(classes.menuButton, open && classes.hide)}
             color="inherit"
             aria-label="open drawer"
+            aria-controls="long-menu"
+        aria-haspopup="true"
           >
             <MenuIcon />
           </IconButton>
@@ -198,9 +200,11 @@ export default function NavBar() {
       </AppBar>
       <Drawer
         className={classes.drawer}
+        id="long-menu"
         variant="persistent"
         anchor="left"
         open={open}
+        onClick={handleDrawerClose}
         classes={{
           paper: classes.drawerPaper,
         }}
