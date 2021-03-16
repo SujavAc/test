@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     width:'auto',
     display: "flex",
     height: "auto",
-    flexDirection: "column",
+    flexDirection: "rows",
     justifyContent: "space-between",
     padding: 7,
   },
@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "space-between",
     paddingTop: theme.spacing(2),
+    alignItems:'center',
   },
   box:{
     height:"300px",
@@ -109,7 +110,7 @@ export default function SingleLineGridList() {
         about us
       </Typography>
 
-      <GridList className={classes.gridList} cols={3} height="auto" justify="space-around">
+      <GridList className={classes.gridList} cols={1.7} height="auto" justify="space-around">
         {feedback.Feedback.map((value) => (
           <GridListTile key={value.key} titlePosition="center"
           >

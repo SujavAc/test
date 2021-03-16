@@ -13,7 +13,7 @@ export default function CommunityService() {
   return (
     <div className={classes.root}>
       <VetCoursePage
-        Title={"Community Services"}
+        Title={"Community Service"}
         Image={
           "https://www.stpaulsmobile.net/image/1-future-saints/about/community-service-image-2017.jpg"
         }

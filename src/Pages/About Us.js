@@ -7,49 +7,43 @@ import NavBarApp from "../component/navbar";
 //import Map from "../component/Map/map";
 import EnquiryForm from "../component/enquiryform";
 import Footer from "../component/footer";
-import Form from '../component/Form/openform';
-import FeedBack from '../component/feedback';
-import Expert from '../image/advice.jpg';
-import Whoarewe from '../image/who_are_we.jpg';
+import Form from "../component/Form/openform";
+import FeedBack from "../component/feedback";
+import Expert from "../image/advice.jpg";
 
-const img = 'https://kapost-files-prod.s3.amazonaws.com/uploads/direct/1494431994-129-1631/3.BikeMonth.gif';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       width: "100%",
-      height: theme.spacing(8),
+      height: theme.spacing(18),
     },
     flexGrow: 1,
-    width: "auto",
-    paddingTop:theme.spacing(10),
-    
+    padding:theme.spacing(1),
   },
   paper: {
-    display:'flex',
     height: "auto",
-    padding: theme.spacing(4),
-    margin: 25,
+    padding: theme.spacing(1),
     width: "auto",
-    background: 'linear-gradient(170deg, #fff3e0 30%, #26c6da 90%)',
-    [theme.breakpoints.up("sm")]: {
-     display:'flex',
-     
-    },
   },
-  
+  Contact: {
+
+    padding: theme.spacing(1),
+    width: "auto",
+    margin: 10,
+    background: "linear-gradient(170deg, #fff3e0 30%, #26c6da 90%)",
+  },
+
   form: {
     height: "auto",
     padding: theme.spacing(4),
     margin: 25,
     width: "auto",
-    
+
     backgroundImage: "url(" + Expert + ")",
     backgroundSize: "cover",
-    
   },
 }));
-
 
 export default function AboutUs() {
   const classes = useStyles();
@@ -58,26 +52,26 @@ export default function AboutUs() {
   return (
     <div className={classes.root}>
       <NavBarApp />
-      
       <Paper elevation={5} className={classes.paper}>
-        <img style ={{height:'50%',width:'50%'}} alt="bannar" src={Whoarewe}/>
-        <Typography
-          variant="body2"
-          gutterBottom
-          style={{ textAlign: "center" }}
-        >
-          Roger Educational Services is a leading education consultancy founded
-          in 2008 with global footprint in 12 countries and 33 cities. Our
-          motive is to provide expert international education guidance and
-          counseling to passionate students. We have a dedicated team of richly
-          experienced and certified professionals to help students in choosing
-          the best courses that are available in international universities
-          across worldwide renowned study destinations like Australia, Canada,
-          Singapore, Malaysia, Ireland, New Zealand, UK and USA.
-        </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs container direction="rows" spacing={3}>
+          <Grid item xs={6}>
+            <Typography variant="body2" gutterBottom paragraph>
+              Roger Educational Services is a leading education consultancy
+              founded in 2008 with global footprint in 12 countries and 33
+              cities. Our motive is to provide expert international education
+              guidance and counseling to passionate students. We have a
+              dedicated team of richly experienced and certified professionals
+              to help students in choosing the best courses that are available
+              in international universities across worldwide renowned study
+              destinations like Australia, Canada, Singapore, Malaysia, Ireland,
+              New Zealand, UK and USA.
+            </Typography>
+          </Grid>
+        </Grid>
+      </Grid>
       </Paper>
-      
-      <Paper elevation={5} className={classes.paper}>
+      <Paper elevation={5} className={classes.Contact}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
@@ -118,12 +112,9 @@ export default function AboutUs() {
         <Map />
       </Paper> */}
       <Paper elevation={5} className={classes.paper}>
-      <FeedBack />
+        <FeedBack />
       </Paper>
-     
-      
-      
-      
+
       <Paper elevation={5} className={classes.form}>
         <Form />
       </Paper>

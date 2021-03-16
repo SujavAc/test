@@ -25,8 +25,18 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   media: {
-    height: 300,
-    width: 300,
+    [theme.breakpoints.up("sm")]: {
+      height: 200,
+      width: 450,
+  },
+  [theme.breakpoints.down("xs")]: {
+      width: 150,
+      height: 100,
+  },
+  [theme.breakpoints.up("md")]: {
+      width: 710,
+      height: 400,
+  },
   },
  
   

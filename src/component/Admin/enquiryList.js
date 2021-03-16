@@ -80,9 +80,9 @@ export default function List() {
         <div className={classes.paper}>
         <Container>
           <Grow in>
-            <Grid container spacing={5} padding={10}>
+            <Grid container spacing={5}>
               
-                <Paper elevation={5} className={classes.paper}>
+                <Paper elevation={5}>
                   <Card >
                     
                         <Typography gutterBottom variant="h6" component="h2">
@@ -106,11 +106,11 @@ export default function List() {
         <div className={classes.paper}>
         <Container>
           <Grow in>
-            <Grid container spacing={5} padding={10}>
+            <Grid container spacing={5}>
               {enquiryData.data.map((value, index) => (
+                 <Grid item xs={6}>
                 <Paper elevation={5} >
                   <Card key={value.key}>
-                    <CardActionArea>
                       <CardContent >
                         <Typography gutterBottom variant="h6" component="h2">
                           <p>
@@ -141,17 +141,18 @@ export default function List() {
                         >
                           <p>
                             {" "}
-                            <b>Date:</b> {value.Date}{" "}
+                            <b>Date and Time:</b> {value.Date}{" "}
                           </p>
                           <br></br>
                         </Typography>
                       </CardContent>
-                    </CardActionArea>
+                    
                     <CardActions key={index.ID}>
                     </CardActions>
                   </Card>
                 </Paper>
-              ),[enquiryData.data])}
+                </Grid>
+              ))}
             </Grid>
           </Grow>
         </Container>

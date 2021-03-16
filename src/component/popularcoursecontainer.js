@@ -22,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
     [theme.breakpoints.up("sm")]: {
         height: 200,
-        width: 350,
+        width: 450,
     },
-    [theme.breakpoints.up("xs")]: {
+    [theme.breakpoints.down("xs")]: {
         width: 150,
         height: 100,
     },

@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
 import Fade from "@material-ui/core/Fade";
@@ -16,10 +13,7 @@ import PopularCourseForm from '../component/Admin/addpopularcourse';
 import BlogForm from '../component/Admin/addBlogPost';
 import EventForm from '../component/Admin/EventForm';
 import FAQsForm from '../component/Admin/FAQs';
-
-function SlideTransition(props) {
-  return <Slide {...props} direction="up" />;
-}
+import NavBar from '../component/Admin/Navbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,6 +66,15 @@ const useStyles = makeStyles((theme) => ({
     margin: 25,
     marginTop: 150,
   },
+  Navbar: {
+    width: "auto",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "auto",
+    display: "flex",
+    flexDirection: "rows",
+    marginTop: 150,
+  },
 }));
 
 export default function Admin() {
@@ -86,18 +89,6 @@ export default function Admin() {
     Transition: Fade,
   });
 
-  // React.useEffect(() => {
-  //   Axios.post(
-  //     "http://localhost:81/Webandy/webandy/src/database/getenquiryform.php"
-  //   )
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setEnquiryData({ data: response.data });
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
-
   const onChangeFile = (event) => {
     const picture = event.target.files[0];
     setData((prevSetData) => ({
@@ -110,41 +101,6 @@ export default function Admin() {
     });
     console.log(event.target.files[0]);
   };
-  const handleClick = (Transition) => () => {
-    setState({
-      open: true,
-      Transition,
-    });
-    if (!image.selectedFile || !data.Title || !data.Description) {
-      setMsgError({
-        message: "fill all the details",
-      });
-    } else {
-      const contentData = new FormData();
-      contentData.append("Title", data.Title);
-      contentData.append("Description", data.Description);
-      contentData.append(
-        "Picture",
-        image.selectedFile,
-        image.selectedFile.name
-      );
-
-      Axios.post(
-        "http://172.26.34.83:81/Webandy/webandy/src/database/post.php",
-        contentData
-      )
-        .then((res) => {
-          console.log(res);
-          console.log(res);
-          setMsgError({
-            message: res.data,
-          });
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
-  };
 
   const handleClose = () => {
     setState({
@@ -154,49 +110,10 @@ export default function Admin() {
   };
   return (
     <div className={classes.root}>
-      <Paper elevation={5} className={classes.paper1}>
-        <form Validate autoComplete="off">
-          <TextField
-            id="outlined-basic"
-            label="Title"
-            variant="outlined"
-            onChange={(event) => {
-              const title = event.target.value;
-              setData((prevSetData) => ({
-                Title: title,
-                Picture: prevSetData.Picture,
-                Description: prevSetData.Description,
-              }));
-            }}
-          />
-          <br></br>
-          <br></br>
-          <TextField
-            id="outlined-basic"
-            label="Description"
-            variant="outlined"
-            onChange={(event) => {
-              const description = event.target.value;
-              setData((prevSetData) => ({
-                Title: prevSetData.Title,
-                Description: description,
-                Picture: prevSetData.Picture,
-              }));
-            }}
-          />
-          <p className="title">Select Image:</p>
-          <div style={{ marginBottom: 10 }}>
-            <input type="file" onChange={onChangeFile} />
-          </div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleClick(SlideTransition)}
-          >
-            Create Banner
-          </Button>
-        </form>
-      </Paper>
+      
+      <div className={classes.Navbar}>
+      <NavBar />
+   </div>
       <Paper elevation={5} className={classes.paper1}>
         <VetandTradeCourse />
       </Paper>

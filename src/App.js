@@ -49,7 +49,7 @@ function App() {
       <Route exact path='/Student Testimonials' component={StudentTestimonials} />
       <Route exact path='/Blog' component={Blog} />
       <Route exact path='/Events' component={Events} />
-      <Route exact path='/BusinessAnalytics' component={BusinessAnalytics} />
+      <Route exact path='/Business Analytics' component={BusinessAnalytics} />
       <Route exact path='/Business Studies' component={BusinessStudies} />
       <Route exact path='/Architecture & Building' component={ArchitectureAndBuilding} />
       <Route exact path='/Creative Arts, Design & Communication' component={ArtDesign} />
@@ -66,8 +66,8 @@ function App() {
       <Route exact path='/Early Childhood Education' component={EarlyChildhood} />
       <Route exact path='/Plumbing' component={Plumbing} />
       <Route exact path='/Painting & Decoration' component={Paintingdecoration} />
-      <Route exact path='/Age Care' component={Agecare} />
-      <Route exact path='/Community Services' component={Communityservices} />
+      <Route exact path='/Aged Care' component={Agecare} />
+      <Route exact path='/Community Service' component={Communityservices} />
       </Switch> 
       </BrowserRouter>
     </div>

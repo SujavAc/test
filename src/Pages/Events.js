@@ -11,7 +11,6 @@ import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import EventRegisterForm from "../component/EventRegisterForm";
 import Menu from "@material-ui/core/Menu";
-import EventDetails from './eventDetails';
 import NavBar from '../component/navbar';
 import Footer from '../component/footer';
 import {fireStore} from '../util/firebase';

@@ -97,7 +97,7 @@ function SimpleDialog(props) {
       aria-labelledby="simple-dialog-title"
       open={open}
     >
-      <DialogTitle id="simple-dialog-title">Send Enquiry</DialogTitle>
+      <DialogTitle id="simple-dialog-title" align="center">Send Enquiry</DialogTitle>
 
       <form className={classes.root} noValidate autoComplete="off">
         <TextField
@@ -114,7 +114,7 @@ function SimpleDialog(props) {
             }));
           }}
         />
-        <br></br>
+        
         <TextField
           id="outlined-basic"
           label="Email"
@@ -129,7 +129,7 @@ function SimpleDialog(props) {
             }));
           }}
         />
-        <br></br>
+        
         <TextField
           id="outlined-basic"
           label="Message"
@@ -144,7 +144,6 @@ function SimpleDialog(props) {
             }));
           }}
         />
-        <br></br>
 
         <Button color="primary" onClick={handleClick} variant='contained'>
           Submit
